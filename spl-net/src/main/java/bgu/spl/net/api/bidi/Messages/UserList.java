@@ -1,8 +1,11 @@
 package bgu.spl.net.api.bidi.Messages;
 
-public class UserList implements Message {
+import bgu.spl.net.api.bidi.BGSystem;
 
-    public UserList(){
+public class UserList extends Message {
+
+    public UserList(BGSystem app){
+        this.app = app;
     }
     @Override
     public Message decode(byte b) {

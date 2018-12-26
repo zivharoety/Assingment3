@@ -1,18 +1,46 @@
 package bgu.spl.net.api.bidi;
 
+import bgu.spl.net.api.bidi.Messages.Message;
+
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class BGSystem {
-    public ConcurrentHashMap<String,User> users;
+    private int connectionCounter;
+    private ConcurrentHashMap<String,User> users;
+    private Connections connections;
+    private ConcurrentHashMap<Integer,User> activeUsers;
+    private LinkedList<Message> data ;
 
-    private BGSystem(){
+    public BGSystem(ConnectionsImpl connections){
         users = new ConcurrentHashMap<>();
+        this.connections = connections;
+        connectionCounter = 0;
+        activeUsers = new ConcurrentHashMap<>();
+        data = new LinkedList<>() ;
     }
-    private static class BGSYstemHolder{
-        private static BGSystem instance = new BGSystem();
+
+
+    public Connections getConnections() {
+        return connections;
     }
-    public static BGSystem getInstance(){
-        return BGSYstemHolder.instance;
+
+    public ConcurrentHashMap<String, User> getUsers() {
+        return users;
+    }
+
+    public int getConnectionCounter() {
+        return connectionCounter;
+    }
+
+    public ConcurrentHashMap<Integer, User> getActiveUsers() {
+        return activeUsers;
+    }
+
+    public void addMessage(Message msg){
+        synchronized (data){
+            data.add(msg);
+        }
     }
 }

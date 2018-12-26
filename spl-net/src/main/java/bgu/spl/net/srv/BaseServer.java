@@ -2,7 +2,9 @@ package bgu.spl.net.srv;
 
 import bgu.spl.net.api.MessageEncoderDecoder;
 import bgu.spl.net.api.MessagingProtocol;
+import bgu.spl.net.api.bidi.BidiMessagingProtocolImpl;
 import bgu.spl.net.api.bidi.ConnectionsImpl;
+import bgu.spl.net.api.bidi.MessageEncoderDecoderImpl;
 import bgu.spl.net.srv.bidi.ConnectionHandler;
 
 import java.io.IOException;
@@ -14,16 +16,16 @@ import java.util.function.Supplier;
 public abstract class BaseServer<T> implements Server<T> {
 
     private final int port;
-    private final Supplier<MessagingProtocol<T>> protocolFactory;
-    private final Supplier<MessageEncoderDecoder<T>> encdecFactory;
+    private final Supplier<BidiMessagingProtocolImpl> protocolFactory;
+    private final Supplier<MessageEncoderDecoderImpl> encdecFactory;
     private ServerSocket sock;
     private int connectionId;
-    private ConnectionsImpl<T> connections;
+    private ConnectionsImpl connections;
 
     public BaseServer(
             int port,
-            Supplier<MessagingProtocol<T>> protocolFactory,
-            Supplier<MessageEncoderDecoder<T>> encdecFactory) {
+            Supplier<BidiMessagingProtocolImpl> protocolFactory,
+            Supplier<MessageEncoderDecoderImpl> encdecFactory) {
 
         this.port = port;
         this.protocolFactory = protocolFactory;
@@ -45,11 +47,10 @@ public abstract class BaseServer<T> implements Server<T> {
 
                 Socket clientSock = serverSock.accept();
 
-                BlockingConnectionHandler<T> handler = new BlockingConnectionHandler<T>(
+                BlockingConnectionHandler handler = new BlockingConnectionHandler(
                         clientSock,
                         encdecFactory.get(),
-                        protocolFactory.get(),
-                        connections);
+                        protocolFactory.get());
 
                 connections.add(connectionId, (ConnectionHandler) handler);
                 connectionId++;
@@ -67,6 +68,6 @@ public abstract class BaseServer<T> implements Server<T> {
 			sock.close();
     }
 
-    protected abstract void execute(BlockingConnectionHandler<T>  handler);
+    protected abstract void execute(BlockingConnectionHandler handler);
 
 }

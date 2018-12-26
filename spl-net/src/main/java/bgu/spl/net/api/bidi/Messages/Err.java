@@ -1,19 +1,21 @@
 package bgu.spl.net.api.bidi.Messages;
 
 import bgu.spl.net.api.bidi.BGSystem;
+import bgu.spl.net.api.bidi.ConnectionsImpl;
 
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
+public class Err extends Message {
 
-public class Stat extends Message {
-
-
-    public Stat(BGSystem app){
+    public Err(BGSystem app){
         this.app = app;
+    }
+
+    public Err(BGSystem app,short op){
+        this.app = app;
+        this.op = op;
     }
     @Override
     public Message decode(byte b) {
-      return decode1Part(b);
+        return decodeOP(b);
     }
 
     @Override
@@ -23,6 +25,6 @@ public class Stat extends Message {
 
     @Override
     public void procces() {
-    }
 
+    }
 }

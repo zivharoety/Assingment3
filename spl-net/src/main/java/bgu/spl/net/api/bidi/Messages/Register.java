@@ -1,46 +1,21 @@
 package bgu.spl.net.api.bidi.Messages;
 
+import bgu.spl.net.api.bidi.BGSystem;
+import bgu.spl.net.api.bidi.User;
 import com.sun.tools.javac.util.Convert;
 import sun.nio.cs.UTF_8;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
-public class Register implements Message {
-    private String userName;
-    private String password;
-    private int counter;
-    private byte[] bytes;
-    private int len;
-    private int userNameEnd;
+public class Register extends Message {
 
-    public Register(){
-
-        this.userName = null;
-        this.password = null;
-        this.counter = 0;
-        bytes= new byte[1<<10];
-        len = 0;
+    public Register(BGSystem app){
+        this.app = app;
     }
-    public void procces() {
-
-
-    }
-
     @Override
     public Message decode(byte b) {
-        if(b == '\0')
-            counter++;
-        pushByte(b);
-        if(counter == 1){
-            userName = new String (bytes,0,len,StandardCharsets.UTF_8);
-            userNameEnd = len;
-        }
-        else if(counter == 2){
-            password= new String(bytes,userNameEnd,len,StandardCharsets.UTF_8);
-            return this;
-        }
-        return null;
+       return decode2Parts(b);
     }
 
     @Override
@@ -48,19 +23,22 @@ public class Register implements Message {
         return new Byte[0];
     }
 
-    private void pushByte(byte nextByte) {
-        if (len >= bytes.length) {
-            bytes = Arrays.copyOf(bytes, len * 2);
+
+    public void procces() {
+
+        if(app.getUsers().contains(getFirstPart())){
+            Err toSend = new Err(app,(short)1);
+
+            app.getConnections().send(protocol.getConnectionId(),toSend);
+        }
+        else{
+            User toAdd = new User(app.getUsers().size()+1,getFirstPart(),getSecondPart());
+            app.getUsers().put(getFirstPart(),toAdd);
+            ACK toSend = new ACK(app, (short) 1);
+            app.getConnections().send(protocol.getConnectionId(),toSend);
         }
 
-        bytes[len++] = nextByte;
+        }
+
     }
 
-    public String getUserName() {
-        return userName;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-}

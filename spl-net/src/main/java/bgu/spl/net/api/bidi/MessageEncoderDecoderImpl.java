@@ -7,6 +7,7 @@ import javax.management.Notification;
 import java.util.Arrays;
 
 public class MessageEncoderDecoderImpl implements MessageEncoderDecoder<Message> {
+    public BGSystem app ; // we need to get the app here !!!
     private byte[] bytes= new byte[1<<10];
     private int length = 0;
     short op = 0;
@@ -50,17 +51,19 @@ public class MessageEncoderDecoderImpl implements MessageEncoderDecoder<Message>
         //this is not actually required as it is the default encoding in java.
             short op = bytesToShort(bytes);
         switch (op) {
-            case 1 : currMessage = new Register();
-            case 2 : currMessage = new Login() ;
-            case 3 : currMessage = new Logout();
+            case 1 : currMessage = new Register(app);
+            case 2 : currMessage = new Login(app) ;
+            case 3 : currMessage = new Logout(app);
                      return currMessage;
-            case 4 : currMessage = new Follow();
-            case 5 : currMessage = new Post();
-            case 6 : currMessage = new PM();
-            case 7 : currMessage = new UserList();
+            case 4 : currMessage = new Follow(app);
+            case 5 : currMessage = new Post(app);
+            case 6 : currMessage = new PM(app);
+            case 7 : currMessage = new UserList(app);
                     return currMessage;
-            case 8 : currMessage = new Stat();
-            case 9 : currMessage = new Noti();
+            case 8 : currMessage = new Stat(app);
+            case 9 : currMessage = new Noti(app);
+            case 10: currMessage = new ACK(app);
+            case 11: currMessage = new Err(app);
 
 
 
