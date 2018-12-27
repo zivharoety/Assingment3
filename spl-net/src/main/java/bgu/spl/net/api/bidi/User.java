@@ -1,5 +1,7 @@
 package bgu.spl.net.api.bidi;
 
+import bgu.spl.net.api.bidi.Messages.Message;
+
 import java.util.LinkedList;
 
 public class User {
@@ -11,6 +13,7 @@ public class User {
     private boolean active;
     private int currentConectionId;
     private int numOfpost;
+    private LinkedList<Message> pendingMessages;
 
    public User(int id, String userName,String password){
         this.id = id;
@@ -19,6 +22,7 @@ public class User {
         this.followers = new LinkedList<>();
         this.following = new LinkedList<>();
         this.active = false;
+        this.pendingMessages = new LinkedList<>();
     }
 
     public String getPassword() {
@@ -87,5 +91,13 @@ public class User {
     }
     public void addPost(){
        numOfpost++;
+    }
+
+    public LinkedList<Message> getPendingMessages() {
+        return pendingMessages;
+    }
+
+    public int getId() {
+        return id;
     }
 }

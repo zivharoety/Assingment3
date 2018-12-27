@@ -25,21 +25,39 @@ public class Post extends Message {
     @Override
     public void procces() {
         User myUser = app.getActiveUsers().get(protocol.getConnectionId());
-        if (myUser != null)
+        if (myUser == null){
+            Err error = new Err(app,(short)5);
+            protocol.getConnections().send(protocol.getConnectionId(),error);
+            return;
+        }
             myUser.addPost();
         app.addMessage(this);
         String str = getFirstPart();
-        while (str != "") {
+        Noti toNoti = new Noti(app, '1',this);
+        while(str.indexOf('@') > -1){
             str = str.substring(str.indexOf('@'));
-            String user =  str.substring(str.indexOf(' '));
-            User toTag = app.getUsers().get(user);
-            if(app.getUsers().get(user).isActive()){
-                Noti toNoti = new Noti(app,0);
-                app.getConnections().send(toTag.getCcurrentConectionId(),toNoti);
+            String userName = str.substring(str.indexOf('@'),str.indexOf(' '));
+            User toTag = app.getUsers().get(userName);
+            if (app.getUsers().get(userName).isActive()) {
+                app.getConnections().send(toTag.getCcurrentConectionId(), toNoti);
             }
-            /// to contiue
-
+            else{
+                toTag.getPendingMessages().addLast(toNoti);
+            }
+            str.substring(1);
         }
+        for(User f: myUser.getFollowers()){
+            if(f.isActive()){
+                app.getConnections().send(f.getCcurrentConectionId(), toNoti);
+
+            }
+            else{
+                f.getPendingMessages().addLast(toNoti);
+            }
+        }
+
+        ACK ack = new ACK(app,(short)5);
+        protocol.getConnections().send(protocol.getConnectionId(),ack);
 
     }
 

@@ -10,14 +10,15 @@ public class Noti extends Message {
 
 
     private  char type;
-    private int status;
+    private Message content;
 
     public Noti(BGSystem app){
         this.app = app;
     }
-    public Noti(BGSystem app, int i){
+    public Noti(BGSystem app, char status, Message content){
         this.app = app;
-        this.status = i;
+        this.type = status;
+        this.content = content;
     }
     @Override
     public Message decode(byte b) {
@@ -39,6 +40,7 @@ public class Noti extends Message {
     @Override
     public void procces() {
 
+
     }
 
 
@@ -46,7 +48,8 @@ public class Noti extends Message {
         return type;
     }
 
-    public int getStatus() {
-        return status;
+
+    public Message getContent() {
+        return content;
     }
 }

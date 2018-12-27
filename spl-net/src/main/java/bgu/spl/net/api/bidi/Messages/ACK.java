@@ -5,9 +5,12 @@ import bgu.spl.net.api.bidi.BGSystem;
 import java.util.LinkedList;
 
 public class ACK extends  Message {
-// to return !! to add a switch case for the optinal data
-private short numOfusers;
+
+    private short numOfusers;
     private LinkedList<String> UserList;
+    private short numPosts;
+    private short numFollowers;
+    private short numFollowing;
     public ACK(BGSystem app){
         this.app = app;
         ;
@@ -16,6 +19,7 @@ private short numOfusers;
         this.app = app;
         this.op = op;
     }
+
     @Override
     public Message decode(byte b) {
         return decodeOP(b);
@@ -45,5 +49,10 @@ private short numOfusers;
 
     public void setUserList(LinkedList<String> userList) {
         UserList = userList;
+    }
+    public void setStat(short numPosts,short numFollowers , short numFollowing){
+        this.numPosts = numPosts;
+        this.numFollowers = numFollowers;
+        this.numFollowing = numFollowing;
     }
 }
