@@ -16,16 +16,16 @@ import java.util.function.Supplier;
 public abstract class BaseServer<T> implements Server<T> {
 
     private final int port;
-    private final Supplier<BidiMessagingProtocolImpl> protocolFactory;
-    private final Supplier<MessageEncoderDecoderImpl> encdecFactory;
+    private final Supplier<MessagingProtocol<T>> protocolFactory;
+    private final Supplier<MessageEncoderDecoder<T>> encdecFactory;
     private ServerSocket sock;
     private int connectionId;
     private ConnectionsImpl connections;
 
     public BaseServer(
             int port,
-            Supplier<BidiMessagingProtocolImpl> protocolFactory,
-            Supplier<MessageEncoderDecoderImpl> encdecFactory) {
+            Supplier<MessagingProtocol<T>> protocolFactory,
+            Supplier<MessageEncoderDecoder<T>> encdecFactory){
 
         this.port = port;
         this.protocolFactory = protocolFactory;
@@ -45,7 +45,7 @@ public abstract class BaseServer<T> implements Server<T> {
 
             while (!Thread.currentThread().isInterrupted()) {
                 Socket clientSock = serverSock.accept();
-                BlockingConnectionHandler handler = new BlockingConnectionHandler(
+                BlockingConnectionHandler<T> handler = new BlockingConnectionHandler<>(
                         clientSock,
                         encdecFactory.get(),
                         protocolFactory.get());

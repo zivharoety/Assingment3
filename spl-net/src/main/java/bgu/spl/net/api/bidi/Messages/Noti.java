@@ -10,12 +10,12 @@ public class Noti extends Message {
 
 
     private  char type;
-    private Message content;
+    private String content;
 
     public Noti(BGSystem app){
         this.app = app;
     }
-    public Noti(BGSystem app, char status, Message content){
+    public Noti(BGSystem app, char status, String content){
         this.app = app;
         this.type = status;
         this.content = content;
@@ -33,12 +33,20 @@ public class Noti extends Message {
     }
 
     @Override
-    public Byte[] encode(Message msg) {
-        return new Byte[0];
+    public byte[] encode(Message msg) {
+        byte[] toReturn = new byte[5+getFirstPart().length()+getSecondPart().length()];
+        addOpbyte(toReturn);
+        toReturn[2] = (byte) type;
+        byteCounter++;
+        byte[] temp = getFirstPart().getBytes();
+        encodeString(toReturn,temp);
+        temp = getSecondPart().getBytes();
+        encodeString(toReturn,temp);
+        return toReturn;
     }
 
     @Override
-    public void procces() {
+    public void process() {
 
 
     }
@@ -49,7 +57,7 @@ public class Noti extends Message {
     }
 
 
-    public Message getContent() {
+    public String getContent() {
         return content;
     }
 }

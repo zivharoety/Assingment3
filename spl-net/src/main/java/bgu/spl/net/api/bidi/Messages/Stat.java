@@ -18,12 +18,19 @@ public class Stat extends Message {
     }
 
     @Override
-    public Byte[] encode(Message msg) {
-        return new Byte[0];
+    public byte[] encode(Message msg) {
+        byte[] toReturn = new byte[3+getFirstPart().length()];
+        byte[] temp = getFirstPart().getBytes();
+        addOpbyte(toReturn);
+        for(int i=0;i<temp.length;i++){
+            toReturn[i+byteCounter] = temp[i];
+        }
+        toReturn[toReturn.length-1] = '\0';
+        return  toReturn;
     }
 
     @Override
-    public void procces() {
+    public void process() {
         User myUser = app.getActiveUsers().get(protocol.getConnectionId());
         User toGetStat = app.getUsers().get(getFirstPart());
         if (myUser == null || toGetStat == null){

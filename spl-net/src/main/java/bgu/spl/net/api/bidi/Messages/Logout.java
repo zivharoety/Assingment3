@@ -13,20 +13,20 @@ public class Logout extends Message {
     }
 
     @Override
-    public Byte[] encode(Message msg) {
-        return new Byte[0];
+    public byte[] encode(Message msg) {
+
+        return shortToBytes(op);
     }
 
     @Override
-    public void procces() {
+    public void process() {
         if(!app.getActiveUsers().contains(protocol.getConnectionId())){
             Err toSend = new Err(app,(short) 3);
             app.getConnections().send(protocol.getConnectionId(),toSend);
         }
         else{
-            app.getUsers().get(app.getActiveUsers().contains(protocol.getConnectionId())).logout();
-            app.getActiveUsers().remove(protocol.getConnectionId());
             ACK toSend = new ACK(app,(short) 3);
+            toSend.setMyUser(app.getActiveUsers().get(protocol.getConnectionId()));
             app.getConnections().send(protocol.getConnectionId(),toSend);
         }
 

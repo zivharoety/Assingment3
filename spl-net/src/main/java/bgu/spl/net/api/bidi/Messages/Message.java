@@ -18,13 +18,14 @@ public abstract class Message {
     protected byte[] bytes;
     protected int userNameEnd;
     protected short op;
+    protected int byteCounter;
 
 
 
 
     public abstract Message decode(byte b);
-    public abstract Byte[] encode(Message msg);
-    public abstract void procces();
+    public abstract byte[] encode(Message msg);
+    public abstract void process();
 
 
     public Message decode2Parts(byte b){
@@ -83,8 +84,47 @@ public abstract class Message {
         result += (short)(byteArr[1] & 0xff);
         return result;
     }
+    public byte[] shortToBytes(short num)
+    {
+        byte[] bytesArr = new byte[2];
+        bytesArr[0] = (byte)((num >> 8) & 0xFF);
+        bytesArr[1] = (byte)(num & 0xFF);
+        return bytesArr;
+    }
+    public void addOpbyte(byte[] toReturn)
+    {
+        byte[] temp = shortToBytes(op);
+        toReturn[0] = temp[0];
+        toReturn[1] = temp[1];
+        byteCounter = 2;
+
+    }
 
     public void setProtocol(BidiMessagingProtocolImpl ptorocol){
         protocol = protocol;
     }
+
+    public byte[] encode2Parts(){
+        byte[] toReturn = new byte[4+getFirstPart().length()+getSecondPart().length()];
+        byte[] temp = shortToBytes(op);
+        toReturn[0] = temp[0];
+        toReturn[1] = temp[1];
+        byteCounter = 2;
+        temp = getFirstPart().getBytes();
+        encodeString(toReturn,temp);
+        temp = getSecondPart().getBytes();
+        encodeString(toReturn,temp);
+
+        return toReturn;
+    }
+
+    public void encodeString(byte[] toReturn, byte[] temp){
+        for(int i = 0 ; i < temp.length ; i++){
+            toReturn[byteCounter+i] = temp[i];
+        }
+        byteCounter = byteCounter + temp.length;
+        toReturn[byteCounter]  = '\0';
+        byteCounter = byteCounter + 1;
+    }
+
 }

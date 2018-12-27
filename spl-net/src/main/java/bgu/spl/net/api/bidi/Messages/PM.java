@@ -15,7 +15,7 @@ public class PM extends Message {
         this.app = app;
 
     }
-    public void procces() {
+    public void process() {
         User myUser = app.getActiveUsers().get(protocol.getConnectionId());
         User toSend = app.getUsers().get(getFirstPart());
         if (myUser == null || toSend == null){
@@ -24,7 +24,7 @@ public class PM extends Message {
             return;
         }
         app.addMessage(this);
-        Noti toNoti = new Noti(app,'0',this);
+        Noti toNoti = new Noti(app,'0',getSecondPart());
         if(toSend.isActive()){
             protocol.getConnections().send(toSend.getCcurrentConectionId(),toNoti);
         }
@@ -43,8 +43,8 @@ public class PM extends Message {
     }
 
     @Override
-    public Byte[] encode(Message msg) {
-        return new Byte[0];
+    public byte[] encode(Message msg) {
+        return encode2Parts();
     }
 
 

@@ -19,12 +19,14 @@ public class Register extends Message {
     }
 
     @Override
-    public Byte[] encode(Message msg) {
-        return new Byte[0];
+    public byte[] encode(Message msg) {
+
+
+        return encode2Parts();
     }
 
 
-    public void procces() {
+    public void process() {
 
         if(app.getUsers().contains(getFirstPart())){
             Err toSend = new Err(app,(short)1);

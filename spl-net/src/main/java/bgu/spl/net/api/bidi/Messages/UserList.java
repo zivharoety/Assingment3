@@ -19,12 +19,14 @@ public class UserList extends Message {
     }
 
     @Override
-    public Byte[] encode(Message msg) {
-        return new Byte[0];
+    public byte[] encode(Message msg) {
+      byte[] toReturn = new byte[2];
+      addOpbyte(toReturn);
+      return toReturn;
     }
 
     @Override
-    public void procces() {
+    public void process() {
         User myUser = app.getActiveUsers().get(protocol.getConnectionId());
         if (myUser == null){
             Err error = new Err(app,(short)7);

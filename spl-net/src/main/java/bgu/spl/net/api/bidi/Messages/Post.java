@@ -18,12 +18,19 @@ public class Post extends Message {
     }
 
     @Override
-    public Byte[] encode(Message msg) {
-        return new Byte[0];
+    public byte[] encode(Message msg) {
+        byte[] temp = getFirstPart().getBytes();
+        byte[] toReturn = new byte[temp.length+3];
+        addOpbyte(toReturn);
+        for(int i = 0; i < temp.length ; i++){
+            toReturn[2+i] = temp[i];
+        }
+        toReturn[toReturn.length-1] = '\0';
+        return toReturn;
     }
 
     @Override
-    public void procces() {
+    public void process() {
         User myUser = app.getActiveUsers().get(protocol.getConnectionId());
         if (myUser == null){
             Err error = new Err(app,(short)5);
@@ -33,7 +40,7 @@ public class Post extends Message {
             myUser.addPost();
         app.addMessage(this);
         String str = getFirstPart();
-        Noti toNoti = new Noti(app, '1',this);
+        Noti toNoti = new Noti(app, '1',getFirstPart());
         while(str.indexOf('@') > -1){
             str = str.substring(str.indexOf('@'));
             String userName = str.substring(str.indexOf('@'),str.indexOf(' '));
