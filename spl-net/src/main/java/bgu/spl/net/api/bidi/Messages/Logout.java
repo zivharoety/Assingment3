@@ -1,11 +1,14 @@
 package bgu.spl.net.api.bidi.Messages;
 
 import bgu.spl.net.api.bidi.BGSystem;
+import bgu.spl.net.api.bidi.BidiMessagingProtocolImpl;
+
+import java.sql.Connection;
 
 public class Logout extends Message {
 
-    public Logout(BGSystem app){
-        this.app = app;
+    public Logout(){
+
     }
     @Override
     public Message decode(byte b) {
@@ -19,15 +22,15 @@ public class Logout extends Message {
     }
 
     @Override
-    public void process() {
+    public void process(BidiMessagingProtocolImpl protocol, BGSystem app){
         if(!app.getActiveUsers().contains(protocol.getConnectionId())){
-            Err toSend = new Err(app,(short) 3);
-            app.getConnections().send(protocol.getConnectionId(),toSend);
+            Err toSend = new Err((short) 3);
+            protocol.getConnections().send(protocol.getConnectionId(),toSend);
         }
         else{
-            ACK toSend = new ACK(app,(short) 3);
+            ACK toSend = new ACK((short) 3);
             toSend.setMyUser(app.getActiveUsers().get(protocol.getConnectionId()));
-            app.getConnections().send(protocol.getConnectionId(),toSend);
+            protocol.getConnections().send(protocol.getConnectionId(),toSend);
         }
 
     }

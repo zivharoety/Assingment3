@@ -6,11 +6,12 @@ import bgu.spl.net.api.bidi.Connections;
 import bgu.spl.net.api.bidi.ConnectionsImpl;
 
 import java.nio.charset.StandardCharsets;
+import java.sql.Connection;
 import java.util.Arrays;
 
 public abstract class Message {
-    protected BidiMessagingProtocolImpl protocol;
-    protected BGSystem app;
+   // protected BidiMessagingProtocolImpl protocol;
+   // protected BGSystem app;
     protected String firstPart;
     protected String secondPart;
     protected int counter;
@@ -25,7 +26,7 @@ public abstract class Message {
 
     public abstract Message decode(byte b);
     public abstract byte[] encode(Message msg);
-    public abstract void process();
+    public abstract void process(BidiMessagingProtocolImpl protocol, BGSystem app);
 
 
     public Message decode2Parts(byte b){
@@ -91,19 +92,19 @@ public abstract class Message {
         bytesArr[1] = (byte)(num & 0xFF);
         return bytesArr;
     }
-    public void addOpbyte(byte[] toReturn)
+    public void add2Bytes (byte[] toReturn , short toConvert)
     {
-        byte[] temp = shortToBytes(op);
-        toReturn[0] = temp[0];
-        toReturn[1] = temp[1];
-        byteCounter = 2;
-
+        byte[] temp = shortToBytes(toConvert);
+        toReturn[byteCounter] = temp[0];
+        byteCounter++;
+        toReturn[byteCounter] = temp[1];
+        byteCounter++;
     }
-
+/*
     public void setProtocol(BidiMessagingProtocolImpl ptorocol){
         protocol = protocol;
     }
-
+*/
     public byte[] encode2Parts(){
         byte[] toReturn = new byte[4+getFirstPart().length()+getSecondPart().length()];
         byte[] temp = shortToBytes(op);

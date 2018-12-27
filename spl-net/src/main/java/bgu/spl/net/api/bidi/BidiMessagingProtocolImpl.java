@@ -5,20 +5,21 @@ import bgu.spl.net.api.bidi.Messages.Message;
 public class BidiMessagingProtocolImpl implements BidiMessagingProtocol<Message> {
 
     private int connectionId;
-    private ConnectionsImpl connection;
+    private Connections connection;
     private boolean terminate;
+    private static BGSystem app = new BGSystem();
 
 
     @Override
     public void start(int connectionId, Connections connections) {
         this.connectionId = connectionId;
-        this.connection = connection;
+        this.connection = connections;
         terminate = false;
     }
 
     @Override
     public void process(Message message) {
-        message.process();
+        message.process(this,app);
 
     }
 
@@ -31,7 +32,7 @@ public class BidiMessagingProtocolImpl implements BidiMessagingProtocol<Message>
         return connectionId;
     }
 
-    public ConnectionsImpl getConnections() {
+    public Connections getConnections() {
         return connection;
     }
 

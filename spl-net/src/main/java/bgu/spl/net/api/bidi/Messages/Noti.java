@@ -1,9 +1,11 @@
 package bgu.spl.net.api.bidi.Messages;
 
 import bgu.spl.net.api.bidi.BGSystem;
+import bgu.spl.net.api.bidi.BidiMessagingProtocolImpl;
 
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
+import java.sql.Connection;
 import java.util.Arrays;
 
 public class Noti extends Message {
@@ -12,11 +14,9 @@ public class Noti extends Message {
     private  char type;
     private String content;
 
-    public Noti(BGSystem app){
-        this.app = app;
+    public Noti(){
     }
-    public Noti(BGSystem app, char status, String content){
-        this.app = app;
+    public Noti(char status, String content){
         this.type = status;
         this.content = content;
     }
@@ -35,7 +35,7 @@ public class Noti extends Message {
     @Override
     public byte[] encode(Message msg) {
         byte[] toReturn = new byte[5+getFirstPart().length()+getSecondPart().length()];
-        addOpbyte(toReturn);
+        add2Bytes(toReturn,op);
         toReturn[2] = (byte) type;
         byteCounter++;
         byte[] temp = getFirstPart().getBytes();
@@ -46,7 +46,7 @@ public class Noti extends Message {
     }
 
     @Override
-    public void process() {
+    public void process(BidiMessagingProtocolImpl protocol, BGSystem app) {
 
 
     }

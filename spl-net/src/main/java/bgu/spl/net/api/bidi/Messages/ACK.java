@@ -1,8 +1,10 @@
 package bgu.spl.net.api.bidi.Messages;
 
 import bgu.spl.net.api.bidi.BGSystem;
+import bgu.spl.net.api.bidi.BidiMessagingProtocolImpl;
 import bgu.spl.net.api.bidi.User;
 
+import java.sql.Connection;
 import java.util.LinkedList;
 
 public class ACK extends  Message {
@@ -14,13 +16,11 @@ public class ACK extends  Message {
     private short numFollowing;
     private short ackop;
     private User myUser;
+    private short status;
 
-    public ACK(BGSystem app){
-        this.app = app;
-        ;
-    }
-    public ACK(BGSystem app,short op){
-        this.app = app;
+    public ACK(){}
+
+    public ACK(short op){
         this.ackop = op;
     }
 
@@ -32,12 +32,47 @@ public class ACK extends  Message {
     @Override
     public byte[] encode(Message msg) {
         switch (ackop){
-            case
+            case 4:
+                String userList4 = "";
+                while(!getUserList().isEmpty()){
+                    userList4 = userList4 + getUserList().removeFirst()+'\0';
+                }
+                byte[] temp4 = userList4.getBytes();
+                byte[] toReturn4 = new byte[7+temp4.length];
+                add2Bytes(toReturn4 , op);
+                add2Bytes(toReturn4 , (short) 4);
+                add2Bytes(toReturn4 , numOfusers);
+                encodeString(toReturn4 , temp4);
+                return toReturn4;
+            case 7:
+                String userList7 = "";
+                while(!getUserList().isEmpty()){
+                    userList7 = userList7 + getUserList().removeFirst()+'\0';
+                }
+                byte[] temp7 = userList7.getBytes();
+                byte[] toReturn7 = new byte[7+temp7.length];
+                add2Bytes(toReturn7 , op);
+                add2Bytes(toReturn7 , (short) 7);
+                add2Bytes(toReturn7 , numOfusers);
+                encodeString(toReturn7 , temp7);
+                return toReturn7;
+            case 8:
+                byte[] toReturn8 = new byte[10];
+                add2Bytes(toReturn8 , op);
+                add2Bytes(toReturn8 , (short) 8);
+                add2Bytes(toReturn8 , numPosts);
+                add2Bytes(toReturn8 , numFollowers);
+                add2Bytes(toReturn8 , numFollowing);
+                return toReturn8;
         }
+        byte[] toReturn = new byte[4];
+        add2Bytes(toReturn , op);
+        add2Bytes(toReturn , ackop);
+        return toReturn;
     }
 
     @Override
-    public void process() {
+    public void process(BidiMessagingProtocolImpl protocol, BGSystem app){
         System.out.print("ACK " + op);
         switch(ackop) {
             case 2:
@@ -96,5 +131,9 @@ public class ACK extends  Message {
 
     public void setMyUser(User myUser) {
         this.myUser = myUser;
+    }
+
+    public void setStatus(short status) {
+        this.status = status;
     }
 }

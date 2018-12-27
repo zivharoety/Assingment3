@@ -1,16 +1,17 @@
 package bgu.spl.net.api.bidi.Messages;
 
 import bgu.spl.net.api.bidi.BGSystem;
+import bgu.spl.net.api.bidi.BidiMessagingProtocolImpl;
 import bgu.spl.net.api.bidi.ConnectionsImpl;
+
+import java.sql.Connection;
 
 public class Err extends Message {
     private short opErr;
-    public Err(BGSystem app){
-        this.app = app;
+    public Err(){
     }
 
-    public Err(BGSystem app,short op){
-        this.app = app;
+    public Err(short op){
         this.opErr = op;
     }
     @Override
@@ -19,12 +20,15 @@ public class Err extends Message {
     }
 
     @Override
-    public Byte[] encode(Message msg) {
-        return new Byte[0];
+    public byte[] encode(Message msg) {
+        byte[] toReturn = new byte[4];
+        add2Bytes(toReturn , op);
+        add2Bytes(toReturn ,opErr);
+        return toReturn;
     }
 
     @Override
-    public void process() {
+    public void process(BidiMessagingProtocolImpl protocol, BGSystem app) {
         System.out.println("Error "+opErr);
     }
 

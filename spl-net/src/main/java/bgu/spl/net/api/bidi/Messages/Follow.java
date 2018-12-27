@@ -1,10 +1,12 @@
 package bgu.spl.net.api.bidi.Messages;
 
 import bgu.spl.net.api.bidi.BGSystem;
+import bgu.spl.net.api.bidi.BidiMessagingProtocolImpl;
 import bgu.spl.net.api.bidi.User;
 
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
+import java.sql.Connection;
 import java.util.Arrays;
 import java.util.LinkedList;
 
@@ -16,8 +18,7 @@ public class Follow extends Message {
     private int pos;
 
 
-    public Follow(BGSystem app){
-        this.app = app;
+    public Follow(){
         pos = 3;
         users = new LinkedList<>();
     }
@@ -51,7 +52,7 @@ public class Follow extends Message {
            userList = userList + users.removeFirst()+'\0';
        }
         byte[] toReturn = new byte[5+userList.length()];
-        addOpbyte(toReturn);
+        add2Bytes(toReturn , op);
         toReturn[2] = (byte) status;
         byte[] temp = shortToBytes((short) numOfUsers);
         toReturn[3] = temp[0];
@@ -66,13 +67,13 @@ public class Follow extends Message {
     }
 
     @Override
-    public void process() {
+    public void process(BidiMessagingProtocolImpl protocol, BGSystem app) {
         LinkedList<String> userList = new LinkedList<>();
 
-        Err Error = new Err(app,(short)4);
-        ACK ack = new ACK(app,(short)4);
+        Err Error = new Err((short)4);
+        ACK ack = new ACK((short)4);
         if(app.getActiveUsers().get(protocol.getConnectionId()) == null){
-            app.getConnections().send(protocol.getConnectionId(),Error);
+            protocol.getConnections().send(protocol.getConnectionId(),Error);
             return;
         }
         if(status == '0'){
@@ -93,12 +94,13 @@ public class Follow extends Message {
 
         }
         if(userList.size() == 0){
-            app.getConnections().send(protocol.getConnectionId(),Error);
+            protocol.getConnections().send(protocol.getConnectionId(),Error);
         }
         else{
             ack.setNumOfusers((short) userList.size());
             ack.setUserList(userList);
-            app.getConnections().send(protocol.getConnectionId(),ack);
+            ack.setStatus((short)status);
+            protocol.getConnections().send(protocol.getConnectionId(),ack);
             numOfUsers = userList.size();
         }
 

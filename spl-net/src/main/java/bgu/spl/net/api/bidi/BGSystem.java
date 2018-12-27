@@ -9,22 +9,22 @@ import java.util.concurrent.ConcurrentHashMap;
 public class BGSystem {
     private int connectionCounter;
     private ConcurrentHashMap<String,User> users;
-    private Connections connections;
+//    private Connections connections;
     private ConcurrentHashMap<Integer,User> activeUsers;
     private LinkedList<Message> data ;
 
-    public BGSystem(ConnectionsImpl connections){
+    public BGSystem(){
         users = new ConcurrentHashMap<>();
-        this.connections = connections;
+    //    this.connections = connections;
         connectionCounter = 0;
         activeUsers = new ConcurrentHashMap<>();
         data = new LinkedList<>() ;
     }
 
-
+/*
     public Connections getConnections() {
         return connections;
-    }
+    }*/
 
     public ConcurrentHashMap<String, User> getUsers() {
         return users;

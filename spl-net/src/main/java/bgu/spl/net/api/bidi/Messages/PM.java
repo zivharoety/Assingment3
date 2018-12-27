@@ -1,37 +1,39 @@
 package bgu.spl.net.api.bidi.Messages;
 
 import bgu.spl.net.api.bidi.BGSystem;
+import bgu.spl.net.api.bidi.BidiMessagingProtocolImpl;
 import bgu.spl.net.api.bidi.User;
 import com.sun.tools.javac.util.Convert;
 import sun.nio.cs.UTF_8;
 
 import java.nio.charset.StandardCharsets;
+import java.sql.Connection;
 import java.util.Arrays;
 
 public class PM extends Message {
 
 
-    public PM(BGSystem app){
-        this.app = app;
+    public PM(){
+
 
     }
-    public void process() {
+    public void process(BidiMessagingProtocolImpl protocol, BGSystem app) {
         User myUser = app.getActiveUsers().get(protocol.getConnectionId());
         User toSend = app.getUsers().get(getFirstPart());
         if (myUser == null || toSend == null){
-            Err error = new Err(app,(short)6);
+            Err error = new Err((short)6);
             protocol.getConnections().send(protocol.getConnectionId(),error);
             return;
         }
         app.addMessage(this);
-        Noti toNoti = new Noti(app,'0',getSecondPart());
+        Noti toNoti = new Noti('0',getSecondPart());
         if(toSend.isActive()){
             protocol.getConnections().send(toSend.getCcurrentConectionId(),toNoti);
         }
         else{
             toSend.getPendingMessages().addLast(toNoti);
         }
-        ACK ack = new ACK(app,(short)6);
+        ACK ack = new ACK((short)6);
         protocol.getConnections().send(myUser.getCcurrentConectionId(),ack);
 
     }
