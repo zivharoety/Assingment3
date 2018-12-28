@@ -38,10 +38,12 @@ public class ACK extends  Message {
                     userList4 = userList4 + getUserList().removeFirst()+'\0';
                 }
                 byte[] temp4 = userList4.getBytes();
-                byte[] toReturn4 = new byte[7+temp4.length];
+                byte[] toReturn4 = new byte[8+temp4.length];
                 add2Bytes(toReturn4 , op);
                 add2Bytes(toReturn4 , (short) 4);
                 add2Bytes(toReturn4 , numOfusers);
+                toReturn4[byteCounter] = '\0';
+                byteCounter++;
                 encodeString(toReturn4 , temp4);
                 return toReturn4;
             case 7:

@@ -24,10 +24,8 @@ public class Post extends Message {
         byte[] temp = getFirstPart().getBytes();
         byte[] toReturn = new byte[temp.length+3];
         add2Bytes(toReturn , op);
-        for(int i = 0; i < temp.length ; i++){
-            toReturn[2+i] = temp[i];
-        }
-        toReturn[toReturn.length-1] = '\0';
+        encodeString(toReturn,temp);
+        toReturn[byteCounter] = '\0';
         return toReturn;
     }
 

@@ -54,16 +54,11 @@ public class Follow extends Message {
         byte[] toReturn = new byte[5+userList.length()];
         add2Bytes(toReturn , op);
         toReturn[2] = (byte) status;
-        byte[] temp = shortToBytes((short) numOfUsers);
-        toReturn[3] = temp[0];
-        toReturn[4] = temp[1];
-        temp  = userList.getBytes();
-        for(int i = 0 ; i < temp.length ; i ++){
-            toReturn[i+5] = temp[i];
-        }
-
+        byteCounter++;
+        add2Bytes(toReturn , (short)numOfUsers);
+        byte[] temp  = userList.getBytes();
+        encodeString(toReturn , temp);
         return toReturn;
-
     }
 
     @Override

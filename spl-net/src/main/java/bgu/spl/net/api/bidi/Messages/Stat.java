@@ -24,10 +24,8 @@ public class Stat extends Message {
         byte[] toReturn = new byte[3+getFirstPart().length()];
         byte[] temp = getFirstPart().getBytes();
         add2Bytes(toReturn , op);
-        for(int i=0;i<temp.length;i++){
-            toReturn[i+byteCounter] = temp[i];
-        }
-        toReturn[toReturn.length-1] = '\0';
+        encodeString(toReturn,temp);
+        toReturn[byteCounter] = '\0';
         return  toReturn;
     }
 
