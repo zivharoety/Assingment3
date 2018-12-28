@@ -2,9 +2,7 @@ package bgu.spl.net.srv;
 
 import bgu.spl.net.api.MessageEncoderDecoder;
 import bgu.spl.net.api.MessagingProtocol;
-import bgu.spl.net.api.bidi.BidiMessagingProtocolImpl;
-import bgu.spl.net.api.bidi.Connections;
-import bgu.spl.net.api.bidi.MessageEncoderDecoderImpl;
+import bgu.spl.net.api.bidi.*;
 import bgu.spl.net.api.bidi.Messages.Message;
 import com.sun.jdi.connect.spi.Connection;
 import bgu.spl.net.srv.bidi.ConnectionHandler;
@@ -16,18 +14,21 @@ import java.net.Socket;
 
 public class BlockingConnectionHandler<T> implements Runnable, ConnectionHandler<T> {
 
-    private final MessagingProtocol<T> protocol;
+    private final BidiMessagingProtocol<T> protocol;
     private final MessageEncoderDecoder<T> encdec;
     private final Socket sock;
     private BufferedInputStream in;
     private BufferedOutputStream out;
     private volatile boolean connected = true;
+    private int connectionId;
+    private Connections connections;
 
-    public BlockingConnectionHandler(Socket sock, MessageEncoderDecoder<T> reader, MessagingProtocol<T> protocol) {
+    public BlockingConnectionHandler(Socket sock, MessageEncoderDecoder<T> reader, BidiMessagingProtocol<T> protocol, int connectionId, ConnectionsImpl connections){
         this.sock = sock;
         this.encdec = reader;
         this.protocol = protocol;
-
+        this.connectionId = connectionId;
+        this.connections = connections;
 
     }
 
@@ -35,10 +36,9 @@ public class BlockingConnectionHandler<T> implements Runnable, ConnectionHandler
     public void run() {
         try (Socket sock = this.sock) { //just for automatic closing
             int read;
-
             in = new BufferedInputStream(sock.getInputStream());
             out = new BufferedOutputStream(sock.getOutputStream());
-
+            protocol.start(connectionId,connections);
             while (!protocol.shouldTerminate() && connected && (read = in.read()) >= 0) {
                 T nextMessage = encdec.decodeNextByte((byte) read);
                 if (nextMessage != null) {
@@ -62,6 +62,7 @@ public class BlockingConnectionHandler<T> implements Runnable, ConnectionHandler
     public void send(Object msg) {
         try {
             out.write(encdec.encode((T) msg)); // to check
+            out.flush(); // to send the message
             //in.read(encdec.encode((Message) msg)); // to check
         }
         catch (IOException exp){}

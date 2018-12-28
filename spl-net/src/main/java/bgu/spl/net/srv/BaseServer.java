@@ -2,6 +2,7 @@ package bgu.spl.net.srv;
 
 import bgu.spl.net.api.MessageEncoderDecoder;
 import bgu.spl.net.api.MessagingProtocol;
+import bgu.spl.net.api.bidi.BidiMessagingProtocol;
 import bgu.spl.net.api.bidi.BidiMessagingProtocolImpl;
 import bgu.spl.net.api.bidi.ConnectionsImpl;
 import bgu.spl.net.api.bidi.MessageEncoderDecoderImpl;
@@ -16,15 +17,16 @@ import java.util.function.Supplier;
 public abstract class BaseServer<T> implements Server<T> {
 
     private final int port;
-    private final Supplier<MessagingProtocol<T>> protocolFactory;
+    private final Supplier<BidiMessagingProtocol<T>> protocolFactory;
     private final Supplier<MessageEncoderDecoder<T>> encdecFactory;
     private ServerSocket sock;
     private int connectionId;
     private ConnectionsImpl connections;
 
+
     public BaseServer(
             int port,
-            Supplier<MessagingProtocol<T>> protocolFactory,
+            Supplier<BidiMessagingProtocol<T>> protocolFactory,
             Supplier<MessageEncoderDecoder<T>> encdecFactory){
 
         this.port = port;
@@ -33,6 +35,7 @@ public abstract class BaseServer<T> implements Server<T> {
 		this.sock = null;
         this.connectionId = 0;
         this.connections = new ConnectionsImpl<>();
+
     }
 
     @Override
@@ -48,7 +51,9 @@ public abstract class BaseServer<T> implements Server<T> {
                 BlockingConnectionHandler<T> handler = new BlockingConnectionHandler<>(
                         clientSock,
                         encdecFactory.get(),
-                        protocolFactory.get());
+                        protocolFactory.get(),
+                        connectionId,
+                        connections);
 
                 connections.add(connectionId, handler);
                 connectionId++;
@@ -66,6 +71,6 @@ public abstract class BaseServer<T> implements Server<T> {
 			sock.close();
     }
 
-    protected abstract void execute(BlockingConnectionHandler handler);
+    protected abstract void execute(BlockingConnectionHandler<T> handler);
 
 }

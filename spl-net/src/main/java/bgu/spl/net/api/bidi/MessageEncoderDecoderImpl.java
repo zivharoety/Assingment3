@@ -37,7 +37,7 @@ public class MessageEncoderDecoderImpl implements MessageEncoderDecoder<Message>
 
     @Override
     public byte[] encode(Message message) {
-        return new byte[0];
+        return message.encode(message);
     }
 
     private void pushByte(byte nextByte) {
@@ -51,19 +51,19 @@ public class MessageEncoderDecoderImpl implements MessageEncoderDecoder<Message>
         //this is not actually required as it is the default encoding in java.
             short op = bytesToShort(bytes);
         switch (op) {
-            case 1 : currMessage = new Register(app);
-            case 2 : currMessage = new Login(app) ;
-            case 3 : currMessage = new Logout(app);
+            case 1 : currMessage = new Register();
+            case 2 : currMessage = new Login() ;
+            case 3 : currMessage = new Logout();
                      return currMessage;
-            case 4 : currMessage = new Follow(app);
-            case 5 : currMessage = new Post(app);
-            case 6 : currMessage = new PM(app);
-            case 7 : currMessage = new UserList(app);
+            case 4 : currMessage = new Follow();
+            case 5 : currMessage = new Post();
+            case 6 : currMessage = new PM();
+            case 7 : currMessage = new UserList();
                     return currMessage;
-            case 8 : currMessage = new Stat(app);
-            case 9 : currMessage = new Noti(app);
-            case 10: currMessage = new ACK(app);
-            case 11: currMessage = new Err(app);
+            case 8 : currMessage = new Stat();
+            case 9 : currMessage = new Noti();
+            case 10: currMessage = new ACK();
+            case 11: currMessage = new Err();
 
 
 
