@@ -15,8 +15,10 @@ public class Noti extends Message {
     private String content;
 
     public Noti(){
+        this.op = op;
     }
     public Noti(char status, String content){
+        this.op = 9;
         this.type = status;
         this.content = content;
     }

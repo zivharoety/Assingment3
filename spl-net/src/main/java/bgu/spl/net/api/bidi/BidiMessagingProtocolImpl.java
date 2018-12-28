@@ -7,9 +7,12 @@ public class BidiMessagingProtocolImpl implements BidiMessagingProtocol<Message>
     private int connectionId;
     private Connections connection;
     private boolean terminate;
-    private static BGSystem app = new BGSystem();
+   // private static BGSystem app = new BGSystem();
+    private BGSystem app;
 
-
+    public  BidiMessagingProtocolImpl(BGSystem data){
+        this.app = data;
+    }
     @Override
     public void start(int connectionId, Connections connections) {
         this.connectionId = connectionId;

@@ -18,10 +18,13 @@ public class ACK extends  Message {
     private User myUser;
     private short status;
 
-    public ACK(){}
+    public ACK(){
+        this.op = 10;
+    }
 
     public ACK(short op){
         this.ackop = op;
+        this.op = 10;
     }
 
     @Override
@@ -66,11 +69,15 @@ public class ACK extends  Message {
                 add2Bytes(toReturn8 , numFollowers);
                 add2Bytes(toReturn8 , numFollowing);
                 return toReturn8;
+
+                default:
+                    byte[] toReturn = new byte[4];
+                    add2Bytes(toReturn , op);
+                    add2Bytes(toReturn , ackop);
+                    return toReturn;
+
         }
-        byte[] toReturn = new byte[4];
-        add2Bytes(toReturn , op);
-        add2Bytes(toReturn , ackop);
-        return toReturn;
+
     }
 
     @Override

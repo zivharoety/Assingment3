@@ -9,9 +9,11 @@ import java.sql.Connection;
 public class Err extends Message {
     private short opErr;
     public Err(){
+        this.op = 11;
     }
 
     public Err(short op){
+        this.op = 11;
         this.opErr = op;
     }
     @Override

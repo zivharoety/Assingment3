@@ -11,7 +11,7 @@ public class User {
     private LinkedList<User> following;
     private LinkedList<User> followers;
     private boolean active;
-    private int currentConectionId;
+    private int currentConnectionId;
     private int numOfpost;
     private LinkedList<Message> pendingMessages;
 
@@ -47,16 +47,16 @@ public class User {
 
     public void activate(int id) {
         this.active = true;
-        currentConectionId = id ;
+        currentConnectionId = id ;
     }
 
     public int getCcurrentConectionId() {
-        return currentConectionId;
+        return currentConnectionId;
     }
 
     public void logout(){
        active = false;
-       currentConectionId = -1;
+       currentConnectionId = -1;
     }
 
     public boolean isFollowing(String name){

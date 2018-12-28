@@ -3,12 +3,7 @@ package bgu.spl.net.api.bidi.Messages;
 import bgu.spl.net.api.bidi.BGSystem;
 import bgu.spl.net.api.bidi.BidiMessagingProtocolImpl;
 import bgu.spl.net.api.bidi.User;
-import com.sun.tools.javac.util.Convert;
-import sun.nio.cs.UTF_8;
 
-import java.nio.charset.StandardCharsets;
-import java.sql.Connection;
-import java.util.Arrays;
 
 public class Login extends Message {
 
