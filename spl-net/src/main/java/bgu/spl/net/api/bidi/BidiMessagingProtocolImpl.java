@@ -20,7 +20,6 @@ public class BidiMessagingProtocolImpl implements BidiMessagingProtocol<Message>
     @Override
     public void process(Message message) {
         message.process(this,app);
-
     }
 
     @Override
@@ -35,7 +34,6 @@ public class BidiMessagingProtocolImpl implements BidiMessagingProtocol<Message>
     public Connections getConnections() {
         return connection;
     }
-
 
     public void terminate() {
         terminate = true;
