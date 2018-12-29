@@ -11,6 +11,8 @@ import java.util.LinkedList;
 public class UserList extends Message {
     private LinkedList<User> users;
     public UserList(){
+        super();
+        op = 8;
         this.users = new LinkedList<>();
     }
     @Override
@@ -20,8 +22,8 @@ public class UserList extends Message {
 
     @Override
     public byte[] encode(Message msg) {
-      byte[] toReturn = new byte[2];
-      add2Bytes(toReturn , op);
+      byte[] toReturn = new byte[3];
+      add2Bytes(toReturn, op);
       return toReturn;
     }
 

@@ -19,8 +19,7 @@ public class MessageEncoderDecoderImpl implements MessageEncoderDecoder<Message>
 
         pushByte(nextByte);
         if (length == 2) {
-            toDecode();
-            return null;
+            return toDecode();
         } else if (length > 2) {
             Message temp = currMessage.decode(nextByte);
             if (temp != null) {

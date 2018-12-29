@@ -8,6 +8,8 @@ public class Register extends Message {
 
     public Register(){
         super();
+        op = 1;
+
     }
     @Override
     public Message decode(byte b) {
@@ -23,8 +25,7 @@ public class Register extends Message {
 
 
     public void process(BidiMessagingProtocolImpl protocol, BGSystem app){
-
-        if(app.getUsers().contains(getFirstPart())){
+        if(app.getUsers().containsKey(getFirstPart())){
             Err toSend = new Err((short)1);
 
             protocol.getConnections().send(protocol.getConnectionId(),toSend);

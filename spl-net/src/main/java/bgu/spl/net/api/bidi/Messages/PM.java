@@ -9,7 +9,8 @@ public class PM extends Message {
 
 
     public PM(){
-
+        super();
+        op = 6;
 
     }
     public void process(BidiMessagingProtocolImpl protocol, BGSystem app) {

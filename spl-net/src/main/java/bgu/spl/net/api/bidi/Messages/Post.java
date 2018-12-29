@@ -12,6 +12,8 @@ public class Post extends Message {
 
 
     public Post(){
+        super();
+        op = 5;
 
     }
     @Override
@@ -25,7 +27,6 @@ public class Post extends Message {
         byte[] toReturn = new byte[temp.length+3];
         add2Bytes(toReturn , op);
         encodeString(toReturn,temp);
-        toReturn[byteCounter] = '\0';
         return toReturn;
     }
 

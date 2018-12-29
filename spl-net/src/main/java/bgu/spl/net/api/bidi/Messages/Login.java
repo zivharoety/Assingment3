@@ -9,6 +9,8 @@ public class Login extends Message {
 
 
     public Login(){
+        super();
+        op = 2;
     }
     public void process(BidiMessagingProtocolImpl protocol, BGSystem app){
         User myUser = app.getUsers().get(getFirstPart());
@@ -22,6 +24,7 @@ public class Login extends Message {
             toSend.setMyUser(myUser);
             app.getActiveUsers().put(protocol.getConnectionId(),myUser);
             protocol.getConnections().send(protocol.getConnectionId(),toSend);
+            myUser.activate(protocol.getConnectionId());
             while(!myUser.getPendingMessages().isEmpty()){
                 myUser.getPendingMessages().pop().process(protocol,app);
             }

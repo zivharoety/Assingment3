@@ -61,7 +61,7 @@ public class User {
 
     public boolean isFollowing(String name){
        for(User u : following) {
-           if (u.getUserName() == name) {
+           if (u.getUserName().equals(name)) {
                return true;
            }
        }

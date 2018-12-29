@@ -12,6 +12,8 @@ public class Stat extends Message {
 
 
     public Stat(){
+        super();
+        op =8;
 
     }
     @Override
@@ -25,7 +27,6 @@ public class Stat extends Message {
         byte[] temp = getFirstPart().getBytes();
         add2Bytes(toReturn , op);
         encodeString(toReturn,temp);
-        toReturn[byteCounter] = '\0';
         return  toReturn;
     }
 

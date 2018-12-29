@@ -108,6 +108,12 @@ public abstract class Message {
         byteCounter++;
     }
 
+    public void finish2Bytes(byte[] toReturn, short toConvert) {
+        add2Bytes(toReturn,toConvert);
+        toReturn[byteCounter] = '\0';
+        byteCounter = byteCounter + 1;
+    }
+
     /*
         public void setProtocol(BidiMessagingProtocolImpl ptorocol){
             protocol = protocol;
@@ -134,6 +140,13 @@ public abstract class Message {
         byteCounter = byteCounter + temp.length;
         toReturn[byteCounter] = '\0';
         byteCounter = byteCounter + 1;
+    }
+    public void encodeStringNoZero(byte[] toReturn, byte[] temp) {
+        for (int i = 0; i < temp.length; i++) {
+            toReturn[byteCounter + i] = temp[i];
+        }
+        byteCounter = byteCounter + temp.length;
+
     }
 
 }

@@ -19,10 +19,12 @@ public class ACK extends  Message {
     private short status;
 
     public ACK(){
+        super();
         this.op = 10;
     }
 
     public ACK(short op){
+        super();
         this.ackop = op;
         this.op = 10;
     }
@@ -37,16 +39,21 @@ public class ACK extends  Message {
         switch (ackop){
             case 4:
                 String userList4 = "";
+                String temp = "";
                 while(!getUserList().isEmpty()){
-                    userList4 = userList4 + getUserList().removeFirst()+'\0';
+                    userList4 = userList4 + getUserList().removeFirst();
+                    if(!userList4.isEmpty()){
+                        userList4 = userList4 + '\0';
+                    }
                 }
+
                 byte[] temp4 = userList4.getBytes();
                 byte[] toReturn4 = new byte[8+temp4.length];
                 add2Bytes(toReturn4 , op);
                 add2Bytes(toReturn4 , (short) 4);
                 add2Bytes(toReturn4 , numOfusers);
-                toReturn4[byteCounter] = '\0';
-                byteCounter++;
+         //       toReturn4[byteCounter] = '\0';
+           //     byteCounter++;
                 encodeString(toReturn4 , temp4);
                 return toReturn4;
             case 7:
@@ -82,10 +89,10 @@ public class ACK extends  Message {
 
     @Override
     public void process(BidiMessagingProtocolImpl protocol, BGSystem app){
-        System.out.print("ACK " + op);
+  /*      System.out.print("ACK " + op);
         switch(ackop) {
-            case 2:
-                myUser.activate(protocol.getConnectionId());
+      redundant      case 2:
+                myUser.activate(protocol.getConnectionId());*
             case 3: {
                 myUser.logout();
                 app.getActiveUsers().remove(protocol.getConnectionId());
@@ -113,6 +120,7 @@ public class ACK extends  Message {
 
         }
         System.out.println();
+        */
 
 
     }
