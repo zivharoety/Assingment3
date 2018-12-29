@@ -3,6 +3,7 @@ package bgu.spl.net.api.bidi;
 import bgu.spl.net.api.bidi.Messages.Message;
 
 import java.util.LinkedList;
+import java.util.PriorityQueue;
 
 public class User {
     private int id;
@@ -69,20 +70,28 @@ public class User {
     }
 
     public void follow(User user){
-        following.add(user);
+       synchronized (following) {
+           following.add(user);
+       }
         user.addFollower(this);
 
     }
     public void unfollow(User user){
-       following.remove(user);
+       synchronized (following) {
+           following.remove(user);
+       }
        user.removeFollower(this);
     }
     public void addFollower(User user){
-       followers.add(user);
+       synchronized (followers) {
+           followers.add(user);
+       }
     }
 
     public void removeFollower(User user){
-        followers.remove(user);
+       synchronized (followers) {
+           followers.remove(user);
+       }
     }
 
 

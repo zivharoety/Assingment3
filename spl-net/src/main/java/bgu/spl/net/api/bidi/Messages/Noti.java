@@ -6,23 +6,30 @@ import bgu.spl.net.api.bidi.BidiMessagingProtocolImpl;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
+import java.sql.Timestamp;
 import java.util.Arrays;
 
 public class Noti extends Message {
 
 
     private  char type;
-    private String content;
+    private Timestamp stamp;
+
 
     public Noti(){
         super();
         this.op = 9;
     }
-    public Noti(char status, String content){
+    public Noti(char status, String user, String content, Timestamp stamp){
         super();
         this.op = 9;
         this.type = status;
-        this.content = content;
+        firstPart= user;
+        secondPart = content;
+        this.stamp = stamp;
+        if(secondPart.charAt(0) == '\0'){
+            secondPart = content.substring(1);
+        }
     }
     @Override
     public Message decode(byte b) {
@@ -62,6 +69,10 @@ public class Noti extends Message {
 
 
     public String getContent() {
-        return content;
+        return secondPart;
+    }
+
+    public Timestamp getStamp() {
+        return stamp;
     }
 }

@@ -4,6 +4,8 @@ import bgu.spl.net.api.bidi.BGSystem;
 import bgu.spl.net.api.bidi.BidiMessagingProtocolImpl;
 import bgu.spl.net.api.bidi.User;
 
+import java.sql.Timestamp;
+
 
 public class PM extends Message {
 
@@ -14,6 +16,8 @@ public class PM extends Message {
 
     }
     public void process(BidiMessagingProtocolImpl protocol, BGSystem app) {
+        Timestamp stamp = new Timestamp(System.currentTimeMillis());
+
         User myUser = app.getActiveUsers().get(protocol.getConnectionId());
         User toSend = app.getUsers().get(getFirstPart());
         if (myUser == null || toSend == null){
@@ -22,7 +26,11 @@ public class PM extends Message {
             return;
         }
         app.addMessage(this);
-        Noti toNoti = new Noti('0',getSecondPart());
+        String content = getSecondPart();
+        if (getFirstPart().indexOf('\0')!= -1){
+            content = content.substring(0,content.indexOf('\0'));
+        }
+        Noti toNoti = new Noti('0',getFirstPart(),getSecondPart(),stamp);
         if(toSend.isActive()){
             protocol.getConnections().send(toSend.getCcurrentConectionId(),toNoti);
         }

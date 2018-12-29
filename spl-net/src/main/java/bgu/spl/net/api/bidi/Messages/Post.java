@@ -6,6 +6,7 @@ import bgu.spl.net.api.bidi.User;
 
 import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
+import java.sql.Timestamp;
 import java.util.Arrays;
 
 public class Post extends Message {
@@ -32,6 +33,7 @@ public class Post extends Message {
 
     @Override
     public void process(BidiMessagingProtocolImpl protocol, BGSystem app){
+        Timestamp stamp = new Timestamp(System.currentTimeMillis());
         User myUser = app.getActiveUsers().get(protocol.getConnectionId());
         if (myUser == null){
             Err error = new Err((short)5);
@@ -40,8 +42,8 @@ public class Post extends Message {
         }
             myUser.addPost();
         app.addMessage(this);
-        String str = getFirstPart();
-        Noti toNoti = new Noti( '1',getFirstPart());
+        String str = getFirstPart().substring(0,getFirstPart().indexOf('\0'));
+        Noti toNoti = new Noti( '1',myUser.getUserName(),str,stamp);
         while(str.indexOf('@') > -1){
             str = str.substring(str.indexOf('@'));
             String userName = str.substring(str.indexOf('@'),str.indexOf(' '));
