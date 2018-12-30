@@ -43,20 +43,30 @@ public class Post extends Message {
             myUser.addPost();
         app.addMessage(this);
         String str = getFirstPart().substring(0,getFirstPart().indexOf('\0'));
-        Noti toNoti = new Noti( '1',myUser.getUserName(),str,stamp);
-        while(str.indexOf('@') > -1){
-            str = str.substring(str.indexOf('@'));
-            String userName = str.substring(str.indexOf('@'),str.indexOf(' '));
+        String temp = str;
+        while(str.indexOf('@') > -1) {
+            Noti toNoti = new Noti('1', myUser.getUserName(), temp, stamp);
+            str = str.substring(str.indexOf('@') + 1);
+            String userName = str;
+            if (userName.indexOf(' ') != -1) {
+                userName = str.substring(0, str.indexOf(' '));
+            }
+            if (userName.indexOf('@') != -1) {
+                userName = str.substring(0, str.indexOf('@'));
+            }
             User toTag = app.getUsers().get(userName);
-            if (app.getUsers().get(userName).isActive()) {
-                protocol.getConnections().send(toTag.getCcurrentConectionId(), toNoti);
+            if (!toTag.isFollowing(myUser.getUserName())) {
+
+                if (app.getUsers().get(userName).isActive()) {
+                    protocol.getConnections().send(toTag.getCcurrentConectionId(), toNoti);
+                } else {
+                    toTag.getPendingMessages().addLast(toNoti);
+                }
+
             }
-            else{
-                toTag.getPendingMessages().addLast(toNoti);
-            }
-            str.substring(1);
         }
         for(User f: myUser.getFollowers()){
+            Noti toNoti = new Noti( '1',myUser.getUserName(),temp,stamp);
             if(f.isActive()){
                 protocol.getConnections().send(f.getCcurrentConectionId(), toNoti);
 

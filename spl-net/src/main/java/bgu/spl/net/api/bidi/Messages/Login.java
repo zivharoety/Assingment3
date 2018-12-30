@@ -4,6 +4,9 @@ import bgu.spl.net.api.bidi.BGSystem;
 import bgu.spl.net.api.bidi.BidiMessagingProtocolImpl;
 import bgu.spl.net.api.bidi.User;
 
+import java.sql.Timestamp;
+import java.util.Comparator;
+
 
 public class Login extends Message {
 
@@ -25,8 +28,20 @@ public class Login extends Message {
             app.getActiveUsers().put(protocol.getConnectionId(),myUser);
             protocol.getConnections().send(protocol.getConnectionId(),toSend);
             myUser.activate(protocol.getConnectionId());
+            Comparator<Noti> comp = new Comparator<Noti>() {
+                @Override
+                public int compare(Noti one, Noti two) {
+                    if (one.getStamp().before(two.getStamp()))
+                        return 1;
+                    if (one.getStamp().after(two.getStamp()))
+                        return -1;
+                    else
+                        return 0;                }
+            };
+
+            myUser.getPendingMessages().sort(comp);
             while(!myUser.getPendingMessages().isEmpty()){
-                myUser.getPendingMessages().pop().process(protocol,app);
+                protocol.getConnections().send(protocol.getConnectionId(),myUser.getPendingMessages().pop());
             }
         }
 

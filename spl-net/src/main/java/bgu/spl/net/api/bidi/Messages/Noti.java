@@ -62,7 +62,6 @@ public class Noti extends Message {
 
     }
 
-
     public char getType() {
         return type;
     }

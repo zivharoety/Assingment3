@@ -27,10 +27,13 @@ public class PM extends Message {
         }
         app.addMessage(this);
         String content = getSecondPart();
-        if (getFirstPart().indexOf('\0')!= -1){
+        if(getSecondPart().charAt(0)== '\0'){
+            content = getSecondPart().substring(1);
+        }
+        if (content.indexOf('\0')!= -1){
             content = content.substring(0,content.indexOf('\0'));
         }
-        Noti toNoti = new Noti('0',getFirstPart(),getSecondPart(),stamp);
+        Noti toNoti = new Noti('0',getFirstPart(),content,stamp);
         if(toSend.isActive()){
             protocol.getConnections().send(toSend.getCcurrentConectionId(),toNoti);
         }
