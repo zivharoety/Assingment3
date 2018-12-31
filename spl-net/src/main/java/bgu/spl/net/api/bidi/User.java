@@ -1,10 +1,8 @@
 package bgu.spl.net.api.bidi;
 
-import bgu.spl.net.api.bidi.Messages.Message;
 import bgu.spl.net.api.bidi.Messages.Noti;
-
 import java.util.LinkedList;
-import java.util.PriorityQueue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class User {
     private int id;
@@ -15,7 +13,7 @@ public class User {
     private boolean active;
     private int currentConnectionId;
     private int numOfpost;
-    private LinkedList<Noti> pendingMessages;
+    private ConcurrentLinkedQueue<Noti> pendingMessages;
 
    public User(int id, String userName,String password){
         this.id = id;
@@ -24,7 +22,7 @@ public class User {
         this.followers = new LinkedList<>();
         this.following = new LinkedList<>();
         this.active = false;
-        this.pendingMessages = new LinkedList<>();
+        this.pendingMessages = new ConcurrentLinkedQueue<>();
     }
 
     public String getPassword() {
@@ -103,7 +101,7 @@ public class User {
        numOfpost++;
     }
 
-    public LinkedList<Noti> getPendingMessages() {
+    public ConcurrentLinkedQueue<Noti> getPendingMessages() {
         return pendingMessages;
     }
 

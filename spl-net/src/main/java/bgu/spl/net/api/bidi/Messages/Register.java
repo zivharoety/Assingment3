@@ -38,6 +38,10 @@ public class Register extends Message {
         }
 
         }
+    public String toString() {
+        return "REGISTER " + getFirstPart() + " " + getSecondPart();
+    }
+
 
     }
 

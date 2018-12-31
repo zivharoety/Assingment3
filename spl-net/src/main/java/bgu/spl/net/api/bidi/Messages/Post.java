@@ -8,6 +8,7 @@ import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 import java.sql.Timestamp;
 import java.util.Arrays;
+import java.util.LinkedList;
 
 public class Post extends Message {
 
@@ -44,6 +45,7 @@ public class Post extends Message {
         app.addMessage(this);
         String str = getFirstPart().substring(0,getFirstPart().indexOf('\0'));
         String temp = str;
+        LinkedList<User> wasSent= new LinkedList<>();
         while(str.indexOf('@') > -1) {
             Noti toNoti = new Noti('1', myUser.getUserName(), temp, stamp);
             str = str.substring(str.indexOf('@') + 1);
@@ -55,30 +57,36 @@ public class Post extends Message {
                 userName = str.substring(0, str.indexOf('@'));
             }
             User toTag = app.getUsers().get(userName);
+            if(toTag != null && !wasSent.contains(toTag)){
             if (!toTag.isFollowing(myUser.getUserName())) {
-
+                    wasSent.add(toTag);
                 if (app.getUsers().get(userName).isActive()) {
                     protocol.getConnections().send(toTag.getCcurrentConectionId(), toNoti);
                 } else {
-                    toTag.getPendingMessages().addLast(toNoti);
+                    toTag.getPendingMessages().add(toNoti);
                 }
 
             }
         }
-        for(User f: myUser.getFollowers()){
+        }
+        LinkedList<User> myCurrFollowers = myUser.getFollowers();
+        for(User f: myCurrFollowers){
             Noti toNoti = new Noti( '1',myUser.getUserName(),temp,stamp);
             if(f.isActive()){
                 protocol.getConnections().send(f.getCcurrentConectionId(), toNoti);
 
             }
             else{
-                f.getPendingMessages().addLast(toNoti);
+                f.getPendingMessages().add(toNoti);
             }
         }
 
         ACK ack = new ACK((short)5);
         protocol.getConnections().send(protocol.getConnectionId(),ack);
 
+    }
+    public String toString() {
+        return ("POST " + getFirstPart());
     }
 
 }

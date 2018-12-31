@@ -4,7 +4,7 @@ import bgu.spl.net.api.MessageEncoderDecoder;
 import bgu.spl.net.api.MessagingProtocol;
 import bgu.spl.net.api.bidi.BidiMessagingProtocol;
 import bgu.spl.net.api.bidi.Connections;
-
+import bgu.spl.net.srv.bidi.ConnectionHandler;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
@@ -38,8 +38,10 @@ public class NonBlockingConnectionHandler<T> implements ConnectionHandler<T> {
         this.reactor = reactor;
         this.connectionId = connectionId;
         this.connections = connections;
-
         protocol.start(connectionId,connections);
+
+
+
     }
 
     public Runnable continueRead() {
@@ -127,7 +129,8 @@ public class NonBlockingConnectionHandler<T> implements ConnectionHandler<T> {
     }
 
     public void send(T msg){
-        writeQueue.add(ByteBuffer.wrap(encdec.encode(msg)));
+        byte[] encode = encdec.encode(msg);
+        writeQueue.add(ByteBuffer.wrap(encode));
         reactor.updateInterestedOps(chan, SelectionKey.OP_READ | SelectionKey.OP_WRITE);
     }
 }

@@ -12,12 +12,12 @@ public class UserList extends Message {
     private LinkedList<User> users;
     public UserList(){
         super();
-        op = 8;
+        op = 7;
         this.users = new LinkedList<>();
     }
     @Override
     public Message decode(byte b) {
-        return null;
+        return this;
     }
 
     @Override
@@ -55,6 +55,7 @@ public class UserList extends Message {
             toReturn.addLast(users.get(i).getUserName());
         }
         ack.setUserList(toReturn);
+    //    ack.setStatus((short)15);
         protocol.getConnections().send(protocol.getConnectionId(),ack);
 
 

@@ -50,6 +50,7 @@ public class MessageEncoderDecoderImpl implements MessageEncoderDecoder<Message>
         //notice that we explicitly requesting that the string will be decoded from UTF-8
         //this is not actually required as it is the default encoding in java.
         short op = bytesToShort(bytes);
+
         switch (op) {
             case 1:
                 currMessage = new Register();
@@ -59,7 +60,9 @@ public class MessageEncoderDecoderImpl implements MessageEncoderDecoder<Message>
                 break;
             case 3:
                 currMessage = new Logout();
-                return currMessage;
+                length = 0;
+               return currMessage;
+
             case 4:
                 currMessage = new Follow();
                 break;
@@ -71,7 +74,9 @@ public class MessageEncoderDecoderImpl implements MessageEncoderDecoder<Message>
                 break;
             case 7:
                 currMessage = new UserList();
-                return currMessage;
+                length = 0;
+               return currMessage;
+           //     break;
             case 8:
                 currMessage = new Stat();
                 break;

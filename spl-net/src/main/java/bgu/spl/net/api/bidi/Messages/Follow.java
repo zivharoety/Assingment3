@@ -51,9 +51,9 @@ public class Follow extends Message {
 
     @Override
     public byte[] encode(Message msg) {
-        String userList = "";
+   /*     String userList = "";
         while (!users.isEmpty()) {
-            userList = userList + users.removeFirst() + '\0';
+            userList = userList + users.removeFirst() +'\0';
         }
         byte[] toReturn = new byte[4 + userList.length()];
         add2Bytes(toReturn, op);
@@ -61,8 +61,8 @@ public class Follow extends Message {
         byteCounter++;
         add2Bytes(toReturn, (short) numOfUsers);
         byte[] temp = userList.getBytes();
-        encodeStringNoZero(toReturn, temp);
-        return toReturn;
+        encodeStringNoZero(toReturn, temp);*/
+        return null;
     }
 
     @Override
@@ -79,7 +79,7 @@ public class Follow extends Message {
             for (String s : users) {
                 if (!(s.indexOf('\0') == -1))
                     s = s.substring(0, s.indexOf('\0'));
-                if (!app.getActiveUsers().get(protocol.getConnectionId()).isFollowing(s)) {
+                if (app.getUsers().containsKey(s) &&!app.getActiveUsers().get(protocol.getConnectionId()).isFollowing(s)) {
                     User u = app.getUsers().get(s);
                     app.getActiveUsers().get(protocol.getConnectionId()).follow(u);
                     userList.add(s);
@@ -89,7 +89,7 @@ public class Follow extends Message {
             for (String s : users) {
                 if (!(s.indexOf('\0') == -1))
                     s = s.substring(0, s.indexOf('\0'));
-                if (app.getActiveUsers().get(protocol.getConnectionId()).isFollowing(s)) {
+                if (app.getUsers().containsKey(s) && app.getActiveUsers().get(protocol.getConnectionId()).isFollowing(s)) {
                     app.getActiveUsers().get(protocol.getConnectionId()).unfollow(app.getUsers().get(s));
                     userList.add(s);
                 }
@@ -116,6 +116,10 @@ public class Follow extends Message {
 
     public char getStatus() {
         return status;
+    }
+
+    public String toString() {
+        return "FOLLOW " + status + " " + numOfUsers + " " + users.toString();
     }
 
 }

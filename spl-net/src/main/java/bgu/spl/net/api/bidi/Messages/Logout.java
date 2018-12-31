@@ -29,8 +29,8 @@ public class Logout extends Message {
     public void process(BidiMessagingProtocolImpl protocol, BGSystem app){
         User myUser = app.getActiveUsers().get(protocol.getConnectionId());
         if(myUser == null){
-            Err toSend = new Err((short) 3);
-            protocol.getConnections().send(protocol.getConnectionId(),toSend);
+            Err errorSend = new Err((short) 3);
+            protocol.getConnections().send(protocol.getConnectionId(),errorSend);
         }
         else{
             myUser.logout();
@@ -43,5 +43,10 @@ public class Logout extends Message {
         }
 
 
+
+
+    }
+    public String toString() {
+        return "LOGOUT";
     }
 }

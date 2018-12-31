@@ -41,13 +41,13 @@ public class ACK extends  Message {
                 String userList4 = "";
                 while(!getUserList().isEmpty()){
                     userList4 = userList4 + getUserList().removeFirst();
-                    if(!userList4.isEmpty()){
+                    if(!getUserList().isEmpty()){
                         userList4 = userList4 + '\0';
                     }
                 }
 
                 byte[] temp4 = userList4.getBytes();
-                byte[] toReturn4 = new byte[8+temp4.length];
+                byte[] toReturn4 = new byte[7+temp4.length];
                 add2Bytes(toReturn4 , op);
                 add2Bytes(toReturn4 , (short) 4);
                 add2Bytes(toReturn4 , numOfusers);
@@ -57,13 +57,13 @@ public class ACK extends  Message {
                 String userList7 = "";
                 while(!getUserList().isEmpty()){
                     userList7 = userList7 + getUserList().removeFirst();
-                    if(!userList7.isEmpty()){
+                    if(!getUserList().isEmpty()){
                         userList7 = userList7 + '\0';
                     }
                 }
 
                 byte[] temp7 = userList7.getBytes();
-                byte[] toReturn7 = new byte[8+temp7.length];
+                byte[] toReturn7 = new byte[7+temp7.length];
                 add2Bytes(toReturn7 , op);
                 add2Bytes(toReturn7 , (short) 7);
                 add2Bytes(toReturn7 , numOfusers);

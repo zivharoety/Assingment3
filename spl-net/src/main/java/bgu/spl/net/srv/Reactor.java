@@ -5,7 +5,7 @@ import bgu.spl.net.api.MessagingProtocol;
 import bgu.spl.net.api.bidi.BidiMessagingProtocol;
 import bgu.spl.net.api.bidi.Connections;
 import bgu.spl.net.api.bidi.ConnectionsImpl;
-
+import bgu.spl.net.srv.bidi.ConnectionHandler;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.channels.ClosedSelectorException;
@@ -28,7 +28,7 @@ public class Reactor<T> implements Server<T> {
     private Thread selectorThread;
     private final ConcurrentLinkedQueue<Runnable> selectorTasks = new ConcurrentLinkedQueue<>();
     private int connectionIdCounter;
-    private Connections connections;
+    private ConnectionsImpl connections;
 
     public Reactor(
             int numThreads,
@@ -111,6 +111,7 @@ public class Reactor<T> implements Server<T> {
                 this,
                 connectionIdCounter,
                 connections);
+        connections.add(connectionIdCounter,handler);
         connectionIdCounter++;
         clientChan.register(selector, SelectionKey.OP_READ, handler);
     }

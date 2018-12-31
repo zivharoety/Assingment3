@@ -33,7 +33,11 @@ public class Stat extends Message {
     @Override
     public void process(BidiMessagingProtocolImpl protocol, BGSystem app){
         User myUser = app.getActiveUsers().get(protocol.getConnectionId());
-        User toGetStat = app.getUsers().get(getFirstPart());
+        String getStat = getFirstPart();
+        if(getFirstPart().indexOf('\0')!= -1){
+             getStat = getFirstPart().substring(0,getFirstPart().indexOf('\0'));
+        }
+        User toGetStat = app.getUsers().get(getStat);
         if (myUser == null || toGetStat == null){
             Err error = new Err((short)8);
             protocol.getConnections().send(protocol.getConnectionId(),error);
@@ -45,6 +49,9 @@ public class Stat extends Message {
             protocol.getConnections().send(protocol.getConnectionId(),ack);
 
         }
+    }
+    public String toString() {
+        return "STAT " + getFirstPart();
     }
 
 }

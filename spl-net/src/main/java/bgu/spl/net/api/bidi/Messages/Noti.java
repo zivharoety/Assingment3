@@ -47,7 +47,10 @@ public class Noti extends Message {
     public byte[] encode(Message msg) {
         byte[] toReturn = new byte[5+getFirstPart().length()+getSecondPart().length()];
         add2Bytes(toReturn,op);
-        toReturn[2] = (byte) type;
+        if(type == '0')
+            toReturn[2] = 0;
+        else
+            toReturn[2] = 1;
         byteCounter++;
         byte[] temp = getFirstPart().getBytes();
         encodeString(toReturn,temp);

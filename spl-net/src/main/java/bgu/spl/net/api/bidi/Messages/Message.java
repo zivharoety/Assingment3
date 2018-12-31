@@ -2,16 +2,10 @@ package bgu.spl.net.api.bidi.Messages;
 
 import bgu.spl.net.api.bidi.BGSystem;
 import bgu.spl.net.api.bidi.BidiMessagingProtocolImpl;
-import bgu.spl.net.api.bidi.Connections;
-import bgu.spl.net.api.bidi.ConnectionsImpl;
-
 import java.nio.charset.StandardCharsets;
-import java.sql.Connection;
 import java.util.Arrays;
 
 public abstract class Message {
-    // protected BidiMessagingProtocolImpl protocol;
-    // protected BGSystem app;
     protected String firstPart;
     protected String secondPart;
     protected int counter;
@@ -42,7 +36,6 @@ public abstract class Message {
                 userNameEnd = len;
             } else if (counter == 2) {
                 secondPart = new String(bytes, userNameEnd, len, StandardCharsets.UTF_8);
-           //     secondPart = secondPart.substring(userNameEnd);
                 return this;
             }
         }
@@ -114,11 +107,6 @@ public abstract class Message {
         byteCounter = byteCounter + 1;
     }
 
-    /*
-        public void setProtocol(BidiMessagingProtocolImpl ptorocol){
-            protocol = protocol;
-        }
-    */
     public byte[] encode2Parts() {
         byte[] toReturn = new byte[4 + getFirstPart().length() + getSecondPart().length()];
         byte[] temp = shortToBytes(op);

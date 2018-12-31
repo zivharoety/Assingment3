@@ -33,12 +33,12 @@ public class PM extends Message {
         if (content.indexOf('\0')!= -1){
             content = content.substring(0,content.indexOf('\0'));
         }
-        Noti toNoti = new Noti('0',getFirstPart(),content,stamp);
+        Noti toNoti = new Noti('0',myUser.getUserName(),content,stamp);
         if(toSend.isActive()){
             protocol.getConnections().send(toSend.getCcurrentConectionId(),toNoti);
         }
         else{
-            toSend.getPendingMessages().addLast(toNoti);
+            toSend.getPendingMessages().add(toNoti);
         }
         ACK ack = new ACK((short)6);
         protocol.getConnections().send(myUser.getCcurrentConectionId(),ack);
@@ -56,5 +56,8 @@ public class PM extends Message {
         return encode2Parts();
     }
 
+    public String toString() {
+        return "PM "+getFirstPart()+" "+getSecondPart();
+    }
 
 }
